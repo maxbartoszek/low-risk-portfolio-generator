@@ -10,7 +10,7 @@ import numpy_financial as npf
 import yfinance as yf
 import matplotlib.pyplot as plt
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Load the tickers
 df = pd.read_csv('Tickers_Example.csv', header=None) # test with Tickers_Example.csv?
@@ -67,19 +67,19 @@ daily_data = yf.download(
 metrics_df = pd.DataFrame(columns=['Ticker', 'Volatility', 'Beta', 'MarketCap', 'Sector'])
 
 for ticker in filtered_lst:
-    # 1. Get price data for this ticker from the daily_data frame
-    # daily_data has a MultiIndex on the columns: (field, ticker)
+    # get price data for this ticker from the daily_data frame
+    # daily_data has a MultiIndex on the columns: (field, tsicker)
     try:
         prices = daily_data['Adj Close'][ticker]
     except KeyError:
         # Fallback if Adj Close isn't available
         prices = daily_data['Close'][ticker]
 
-    # 2. Compute daily returns and volatility (std of returns)
+    # compute daily returns and volatility (std of returns)
     returns = prices.pct_change().dropna()
     volatility = returns.std()
 
-    # 3. Pull beta, market cap, and sector from Yahoo Finance info
+    # pull beta, market cap, and sector from Yahoo Finance info
     t = yf.Ticker(ticker)
     info = t.info
 
@@ -87,12 +87,11 @@ for ticker in filtered_lst:
     market_cap = info.get('marketCap', np.nan)
     sector = info.get('sector', 'Unknown')
 
-    # 4. Append to our metrics dataframe
+    # append to our metrics dataframe
     metrics_df.loc[len(metrics_df)] = [ticker, volatility, beta, market_cap, sector]
 
 # Quick look at the result
 print(metrics_df.head())
-
 
 # Use the weighted scoring algorithm in the doc to provide a score /100 per stock
 
@@ -101,6 +100,8 @@ print(metrics_df.head())
 # Take the top 5 from each sector (based on their score /100) and put them in a new dataframe
 
 # Then return the top 25
+
+# Make the LAST ONE A SMALL CAP GUARANTEED
 
 # Use minimum variance portfolio optimization to determine optimal weights per stock
 
