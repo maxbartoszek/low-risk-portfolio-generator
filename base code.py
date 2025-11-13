@@ -63,6 +63,37 @@ daily_data = yf.download(
 
 # Get/calculate volatility (std), beta, market cap, and sectors
 
+# We'll store all the metrics in this dataframe
+metrics_df = pd.DataFrame(columns=['Ticker', 'Volatility', 'Beta', 'MarketCap', 'Sector'])
+
+for ticker in filtered_lst:
+    # 1. Get price data for this ticker from the daily_data frame
+    # daily_data has a MultiIndex on the columns: (field, ticker)
+    try:
+        prices = daily_data['Adj Close'][ticker]
+    except KeyError:
+        # Fallback if Adj Close isn't available
+        prices = daily_data['Close'][ticker]
+
+    # 2. Compute daily returns and volatility (std of returns)
+    returns = prices.pct_change().dropna()
+    volatility = returns.std()
+
+    # 3. Pull beta, market cap, and sector from Yahoo Finance info
+    t = yf.Ticker(ticker)
+    info = t.info
+
+    beta = info.get('beta', np.nan)
+    market_cap = info.get('marketCap', np.nan)
+    sector = info.get('sector', 'Unknown')
+
+    # 4. Append to our metrics dataframe
+    metrics_df.loc[len(metrics_df)] = [ticker, volatility, beta, market_cap, sector]
+
+# Quick look at the result
+print(metrics_df.head())
+
+
 # Use the weighted scoring algorithm in the doc to provide a score /100 per stock
 
 # After scoring, put all stocks in lists based on sector
