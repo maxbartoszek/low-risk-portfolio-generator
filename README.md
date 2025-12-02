@@ -20,12 +20,13 @@ This pipeline generates a minimum-variance portfolio using North American equiti
 
 2. Stability Factor Computation
 For each ticker, the model computes:
+
 |     Factor     |             Purpose                 |
 |   Volatility   |      Measures day-to-day risk       |
 |      Beta      |      Measures market sensitivity    |
 |   Market Cap   |      Stability & size proxy         |
 
-3. Custom Scoring for Low Risk
+4. Custom Scoring for Low Risk
 * Low volatility → higher score
 * Low beta → higher score
 * Large market cap → higher score
