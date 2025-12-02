@@ -22,6 +22,7 @@ This pipeline generates a minimum-variance portfolio using North American equiti
 For each ticker, the model computes:
 
 |     Factor     |             Purpose                 |
+|----------------|-------------------------------------|
 |   Volatility   |      Measures day-to-day risk       |
 |      Beta      |      Measures market sensitivity    |
 |   Market Cap   |      Stability & size proxy         |
